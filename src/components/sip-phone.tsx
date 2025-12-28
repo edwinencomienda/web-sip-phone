@@ -141,6 +141,7 @@ export function SipPhone({ account }: SipPhoneProps) {
     const onCallEnded = (data: any) => {
       if (!isMountedRef.current) return
       stopRingingSound()
+      document.title = 'Web SIP Phone'
       setCallStatus(data.message)
       setIsInCall(false)
       setIsCallingOut(false)
@@ -185,6 +186,8 @@ export function SipPhone({ account }: SipPhoneProps) {
       currentCallTypeRef.current = 'incoming'
       currentCallStartRef.current = new Date() // Log start time for incoming calls
       playRingingSound() // Play ringing sound effect
+      // Update page title to indicate incoming call
+      document.title = `Incoming Call - ${data.caller}`
     }
 
     // Setup SIP service event listeners
@@ -420,6 +423,7 @@ export function SipPhone({ account }: SipPhoneProps) {
         <AlertDialog open={!!incomingCall} onOpenChange={(open) => {
           if (!open) {
             stopRingingSound()
+            document.title = 'Web SIP Phone'
             setIncomingCall(null)
             sipService.endCall()
           }

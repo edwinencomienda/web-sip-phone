@@ -66,6 +66,11 @@ export function App() {
     }
   }
 
+  const handleSelectAccount = (id: string) => {
+    setSelectedAccountId(id)
+    setShowSettings(false)
+  }
+
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background flex">
@@ -73,7 +78,7 @@ export function App() {
         <AccountSidebar
           accounts={accounts}
           selectedAccountId={selectedAccountId}
-          onSelectAccount={setSelectedAccountId}
+          onSelectAccount={handleSelectAccount}
           onAddAccount={() => {
             setEditingAccountId(null)
             setShowSettings(true)

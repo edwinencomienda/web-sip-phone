@@ -1,8 +1,9 @@
 import type { SipAccount } from '@/App'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Plus, Trash2, Edit2, Check } from 'lucide-react'
+import { Plus, Trash2, Edit2, Check, Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface AccountSidebarProps {
   accounts: SipAccount[]
@@ -21,6 +22,17 @@ export function AccountSidebar({
   onEditAccount,
   onDeleteAccount,
 }: AccountSidebarProps) {
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  const handleCopyConfig = (account: SipAccount, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const { id, ...configWithoutId } = account
+    const config = JSON.stringify(configWithoutId, null, 2)
+    navigator.clipboard.writeText(config)
+    setCopiedId(account.id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
+
   return (
     <div className="w-64 bg-card border-r border-border flex flex-col h-screen">
       {/* Header */}
@@ -66,31 +78,47 @@ export function AccountSidebar({
                   </div>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 w-7 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onEditAccount(account.id)
-                    }}
-                  >
-                    <Edit2 className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      if (confirm(`Delete account ${account.username}?`)) {
-                        onDeleteAccount(account.id)
-                      }
-                    }}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
+                   {copiedId === account.id ? (
+                     <div className="flex items-center gap-1 text-xs text-green-600">
+                       <Check className="h-3 w-3" />
+                       Copied
+                     </div>
+                   ) : (
+                     <Button
+                       size="sm"
+                       variant="ghost"
+                       className="h-7 w-7 p-0"
+                       title="Copy config as JSON"
+                       onClick={(e) => handleCopyConfig(account, e)}
+                     >
+                       <Copy className="h-3 w-3" />
+                     </Button>
+                   )}
+                   <Button
+                     size="sm"
+                     variant="ghost"
+                     className="h-7 w-7 p-0"
+                     onClick={(e) => {
+                       e.stopPropagation()
+                       onEditAccount(account.id)
+                     }}
+                   >
+                     <Edit2 className="h-3 w-3" />
+                   </Button>
+                   <Button
+                     size="sm"
+                     variant="ghost"
+                     className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                     onClick={(e) => {
+                       e.stopPropagation()
+                       if (confirm(`Delete account ${account.username}?`)) {
+                         onDeleteAccount(account.id)
+                       }
+                     }}
+                   >
+                     <Trash2 className="h-3 w-3" />
+                   </Button>
+                 </div>
               </div>
               {selectedAccountId === account.id && (
                 <div className="flex items-center gap-1 mt-2 text-xs">

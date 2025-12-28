@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { SipAccount } from '@/App'
 import { sipService } from '@/lib/sip-service'
 import { playDTMFTone } from '@/lib/dtmf-audio'
+import { playRingingSound, stopRingingSound } from '@/lib/ringing-audio'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -139,6 +140,7 @@ export function SipPhone({ account }: SipPhoneProps) {
 
     const onCallEnded = (data: any) => {
       if (!isMountedRef.current) return
+      stopRingingSound()
       setCallStatus(data.message)
       setIsInCall(false)
       setIsCallingOut(false)
@@ -182,6 +184,7 @@ export function SipPhone({ account }: SipPhoneProps) {
       currentCallNumberRef.current = data.caller
       currentCallTypeRef.current = 'incoming'
       currentCallStartRef.current = new Date() // Log start time for incoming calls
+      playRingingSound() // Play ringing sound effect
     }
 
     // Setup SIP service event listeners
@@ -224,6 +227,7 @@ export function SipPhone({ account }: SipPhoneProps) {
     return () => {
       console.log('SipPhone: Cleaning up listeners')
       isMountedRef.current = false
+      stopRingingSound()
       sipService.removeEventListener('registration', onRegistration)
       sipService.removeEventListener('callState', onCallState)
       sipService.removeEventListener('callEnded', onCallEnded)
@@ -415,6 +419,7 @@ export function SipPhone({ account }: SipPhoneProps) {
         {/* Incoming Call Dialog */}
         <AlertDialog open={!!incomingCall} onOpenChange={(open) => {
           if (!open) {
+            stopRingingSound()
             setIncomingCall(null)
             sipService.endCall()
           }
@@ -431,6 +436,7 @@ export function SipPhone({ account }: SipPhoneProps) {
               <AlertDialogAction
                 onClick={async () => {
                   try {
+                    stopRingingSound()
                     await sipService.answerCall()
                     setIncomingCall(null)
                   } catch (error) {

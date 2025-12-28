@@ -240,12 +240,15 @@ export function SipPhone({ account }: SipPhoneProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Registration Status */}
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Registration:</span>
-          <Badge variant={isRegistered ? "default" : "secondary"}>
-            {registrationStatus}
-          </Badge>
-        </div>
+         <div className="flex items-center justify-between">
+           <span className="text-sm font-medium">Registration:</span>
+           <Badge 
+             variant={isRegistered ? "default" : "secondary"}
+             className={isRegistered ? "bg-green-600 hover:bg-green-700" : ""}
+           >
+             {registrationStatus}
+           </Badge>
+         </div>
 
         {/* Account Info */}
         {account && (

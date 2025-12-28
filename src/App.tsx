@@ -3,6 +3,7 @@ import { SipAccountSettings } from '@/components/sip-account-settings'
 import { SipPhone } from '@/components/sip-phone'
 import { AccountSidebar } from '@/components/account-sidebar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ThemeProvider } from '@/lib/theme-provider'
 
 export interface SipAccount {
   id: string
@@ -66,78 +67,80 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
-      <AccountSidebar
-        accounts={accounts}
-        selectedAccountId={selectedAccountId}
-        onSelectAccount={setSelectedAccountId}
-        onAddAccount={() => {
-          setEditingAccountId(null)
-          setShowSettings(true)
-        }}
-        onEditAccount={(id) => {
-          setEditingAccountId(id)
-          setShowSettings(true)
-        }}
-        onDeleteAccount={handleDeleteAccount}
-      />
+    <ThemeProvider>
+      <div className="min-h-screen bg-background flex">
+        {/* Sidebar */}
+        <AccountSidebar
+          accounts={accounts}
+          selectedAccountId={selectedAccountId}
+          onSelectAccount={setSelectedAccountId}
+          onAddAccount={() => {
+            setEditingAccountId(null)
+            setShowSettings(true)
+          }}
+          onEditAccount={(id) => {
+            setEditingAccountId(id)
+            setShowSettings(true)
+          }}
+          onDeleteAccount={handleDeleteAccount}
+        />
 
-      {/* Main Content */}
-      <div className="flex-1 p-4">
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold">Web SIP Phone</h1>
-            <p className="text-muted-foreground">
-              Make and receive SIP calls from your browser
-            </p>
-          </div>
+        {/* Main Content */}
+        <div className="flex-1 p-4">
+          <div className="max-w-2xl mx-auto space-y-6">
+            {/* Header */}
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl font-bold">Web SIP Phone</h1>
+              <p className="text-muted-foreground">
+                Make and receive SIP calls from your browser
+              </p>
+            </div>
 
-          {/* Main Content */}
-          <div className="space-y-4">
-            {showSettings ? (
-              <SipAccountSettings 
-                onSave={handleSaveAccount}
-                accountToEdit={editingAccountId ? accounts.find(a => a.id === editingAccountId) : undefined}
-              />
-            ) : currentAccount ? (
-              <SipPhone 
-                account={currentAccount} 
-              />
-            ) : (
-              <Card className="w-full max-w-md mx-auto">
+            {/* Main Content */}
+            <div className="space-y-4">
+              {showSettings ? (
+                <SipAccountSettings 
+                  onSave={handleSaveAccount}
+                  accountToEdit={editingAccountId ? accounts.find(a => a.id === editingAccountId) : undefined}
+                />
+              ) : currentAccount ? (
+                <SipPhone 
+                  account={currentAccount} 
+                />
+              ) : (
+                <Card className="w-full max-w-md mx-auto">
+                  <CardHeader>
+                    <CardTitle>No Account Selected</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center text-sm text-muted-foreground">
+                    <p>Add or select a SIP account from the sidebar to get started.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Info Card */}
+            {!showSettings && (
+              <Card>
                 <CardHeader>
-                  <CardTitle>No Account Selected</CardTitle>
+                  <CardTitle className="text-sm">About</CardTitle>
                 </CardHeader>
-                <CardContent className="text-center text-sm text-muted-foreground">
-                  <p>Add or select a SIP account from the sidebar to get started.</p>
+                <CardContent className="text-xs text-muted-foreground space-y-2">
+                  <p>
+                    This Web SIP Phone allows you to make VoIP calls using SIP protocol 
+                    directly from your browser.
+                  </p>
+                  <p>
+                    Configure your SIP account settings to get started. Your credentials 
+                    are stored locally in your browser.
+                  </p>
                 </CardContent>
               </Card>
             )}
           </div>
-
-          {/* Info Card */}
-          {!showSettings && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">About</CardTitle>
-              </CardHeader>
-              <CardContent className="text-xs text-muted-foreground space-y-2">
-                <p>
-                  This Web SIP Phone allows you to make VoIP calls using SIP protocol 
-                  directly from your browser.
-                </p>
-                <p>
-                  Configure your SIP account settings to get started. Your credentials 
-                  are stored locally in your browser.
-                </p>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   )
 }
 

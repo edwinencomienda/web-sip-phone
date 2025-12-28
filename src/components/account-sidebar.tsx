@@ -1,9 +1,10 @@
 import type { SipAccount } from '@/App'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Plus, Trash2, Edit2, Check, Copy } from 'lucide-react'
+import { Plus, Trash2, Edit2, Check, Copy, Sun, Moon, Monitor } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { useTheme } from '@/lib/theme-provider'
 
 interface AccountSidebarProps {
   accounts: SipAccount[]
@@ -23,6 +24,7 @@ export function AccountSidebar({
   onDeleteAccount,
 }: AccountSidebarProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const { theme, setTheme } = useTheme()
 
   const handleCopyConfig = (account: SipAccount, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -129,6 +131,40 @@ export function AccountSidebar({
             </div>
           ))
         )}
+      </div>
+
+      {/* Theme Toggle */}
+      <div className="border-t border-border p-3 space-y-2">
+        <p className="text-xs font-semibold text-muted-foreground">Theme</p>
+        <div className="grid grid-cols-3 gap-1">
+          <Button
+            size="sm"
+            variant={theme === 'light' ? 'default' : 'ghost'}
+            className="h-8"
+            onClick={() => setTheme('light')}
+            title="Light mode"
+          >
+            <Sun className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant={theme === 'dark' ? 'default' : 'ghost'}
+            className="h-8"
+            onClick={() => setTheme('dark')}
+            title="Dark mode"
+          >
+            <Moon className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant={theme === 'system' ? 'default' : 'ghost'}
+            className="h-8"
+            onClick={() => setTheme('system')}
+            title="System theme"
+          >
+            <Monitor className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

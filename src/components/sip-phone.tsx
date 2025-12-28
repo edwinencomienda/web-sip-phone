@@ -28,7 +28,6 @@ interface CallLog {
 
 interface SipPhoneProps {
   account: SipAccount | null
-  onShowSettings: () => void
 }
 
 function formatDuration(seconds: number): string {
@@ -42,7 +41,7 @@ function formatDuration(seconds: number): string {
   return `${minutes}:${secs.toString().padStart(2, '0')}`
 }
 
-export function SipPhone({ account, onShowSettings }: SipPhoneProps) {
+export function SipPhone({ account }: SipPhoneProps) {
   const [isRegistered, setIsRegistered] = useState(false)
   const [isInCall, setIsInCall] = useState(false)
   const [isCallingOut, setIsCallingOut] = useState(false)

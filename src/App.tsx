@@ -104,7 +104,6 @@ export function App() {
             ) : currentAccount ? (
               <SipPhone 
                 account={currentAccount} 
-                onShowSettings={() => setShowSettings(true)} 
               />
             ) : (
               <Card className="w-full max-w-md mx-auto">
